@@ -24,13 +24,10 @@ public class OtpController {
 
     @PostMapping("/v1/_send")
     @ResponseStatus(HttpStatus.CREATED)
-    public String sendOtp(@RequestBody OtpRequest otpRequest) {
-      return "CHANGED FOR TESTING API";
+    public OtpResponse sendOtp(@RequestBody OtpRequest otpRequest) {
+        otpService.sendOtp(otpRequest.toDomain());
+        return OtpResponse.builder().
+                responseInfo(null).successful(true).build();
     }
-//    public OtpResponse sendOtp(@RequestBody OtpRequest otpRequest) {
-//        otpService.sendOtp(otpRequest.toDomain());
-//        return OtpResponse.builder().
-//                responseInfo(null).successful(true).build();
-//    }
 
 }

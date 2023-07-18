@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.egov.domain.service.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -38,6 +39,9 @@ public class OtpSMSRepository {
     private LocalizationService localizationService;
 
     @Autowired
+    private MsgOtpService msgOtpService;
+
+    @Autowired
     public OtpSMSRepository(CustomKafkaTemplate<String, SMSRequest> kafkaTemplate,
                             @Value("${sms.topic}") String smsTopic) {
         this.kafkaTemplate = kafkaTemplate;
@@ -48,6 +52,7 @@ public class OtpSMSRepository {
     public void send(OtpRequest otpRequest, String otpNumber) {
 		Long currentTime = System.currentTimeMillis() + maxExecutionTime;
 		final String message = getMessage(otpNumber, otpRequest);
+        msgOtpService.sendOTP(otpRequest.getMobileNumber());
         kafkaTemplate.send(smsTopic, new SMSRequest(otpRequest.getMobileNumber(), message, Category.OTP, currentTime));
     }
 
