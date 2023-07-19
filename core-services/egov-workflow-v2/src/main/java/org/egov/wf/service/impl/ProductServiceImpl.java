@@ -1,4 +1,4 @@
-package package org.egov.wf.service.impl;
+package org.egov.wf.service.impl;
 
 import org.egov.wf.web.models.Catalog;
 import org.egov.wf.web.models.Purchase;
