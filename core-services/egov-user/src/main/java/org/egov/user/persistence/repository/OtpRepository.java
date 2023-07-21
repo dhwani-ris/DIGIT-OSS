@@ -3,10 +3,12 @@ package org.egov.user.persistence.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.egov.tracer.model.ServiceCallException;
 import org.egov.user.domain.model.OtpValidationRequest;
+import org.egov.user.domain.service.MsgOtpService;
 import org.egov.user.persistence.dto.Otp;
 import org.egov.user.persistence.dto.OtpRequest;
 import org.egov.user.persistence.dto.OtpResponse;
 import org.egov.user.web.contract.OtpValidateRequest;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -16,6 +18,10 @@ import org.springframework.web.client.RestTemplate;
 @Repository
 @Slf4j
 public class OtpRepository {
+
+    @Autowired
+    private MsgOtpService msgOtpService;
+
     private final RestTemplate restTemplate;
     private final String otpSearchEndpoint;
     private final String otpValidateEndpoint;
@@ -52,8 +58,18 @@ public class OtpRepository {
      */
     public boolean validateOtp(OtpValidateRequest request) {
         try {
+            System.out.println("****************************************varify Otp***********");
+            System.out.println("mob"+request.getOtp().getIdentity());
+            System.out.println("otp"+request.getOtp().getOtp());
+            System.out.println("mo"+request.getRequestInfo().getUserInfo().getMobileNumber());
+            System.out.println("un"+request.getRequestInfo().getUserInfo().getUserName());
+            System.out.println("****************************************varify Otp***********");
+
             OtpResponse otpResponse = restTemplate.postForObject(otpValidateEndpoint, request, OtpResponse.class);
-            if (null != otpResponse && null != otpResponse.getOtp())
+            JSONObject res = msgOtpService.verifyOTP(request.getOtp().getIdentity(), Integer.parseInt(request.getOtp().getOtp()));
+            if (res.get("type").equals("Success")) {
+                return true;
+            } else if (null != otpResponse && null != otpResponse.getOtp())
                 return otpResponse.getOtp().isValidationSuccessful();
             else
                 return false;
