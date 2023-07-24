@@ -1,6 +1,5 @@
 package org.egov.domain.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +25,9 @@ public class MsgOtpServiceImpl implements MsgOtpService {
     @Value("${sms.senderid}")
     private String senderId;
 
-    public void sendOTP(String phoneNumber) {
-        String url = smsSendUrl + "?template_id=" + templateId + "&authkey=" + secretKey + "&mobile=91" + phoneNumber;
+    public void sendOTP(String phoneNumber,Integer otp) {
+//        https://control.msg91.com/api/v5/otp?template_id=&mobile=&otp=823723&otp_length=6
+        String url = smsSendUrl + "?template_id=" + templateId + "&authkey=" + secretKey + "&mobile=91" + phoneNumber+"&otp_length=6&otp="+otp;
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         ResponseEntity<Object> responseEntity = null;

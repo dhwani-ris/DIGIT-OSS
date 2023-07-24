@@ -52,7 +52,11 @@ public class OtpSMSRepository {
     public void send(OtpRequest otpRequest, String otpNumber) {
 		Long currentTime = System.currentTimeMillis() + maxExecutionTime;
 		final String message = getMessage(otpNumber, otpRequest);
-        msgOtpService.sendOTP(otpRequest.getMobileNumber());
+        System.out.println("message********************************________________");
+        System.out.println(message);
+        System.out.println(otpNumber);
+
+        msgOtpService.sendOTP(otpRequest.getMobileNumber(),Integer.parseInt(otpNumber));
         kafkaTemplate.send(smsTopic, new SMSRequest(otpRequest.getMobileNumber(), message, Category.OTP, currentTime));
     }
 
